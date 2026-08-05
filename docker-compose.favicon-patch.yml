@@ -1,0 +1,19 @@
+# Temporary patch overlay: bind-mounts the favicon fix straight into the
+# running image so it's live without waiting for a new image build/push.
+# The project is installed editable (uv sync), so the app reads these files
+# directly from /app/src/malla at runtime.
+#
+# Usage (on the server, from the repo checkout with the favicon fix applied):
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml -f docker-compose.favicon-patch.yml up -d
+#
+# Remove this file (and drop it from the command above) once a new image
+# with the fix baked in has been pulled — otherwise it will keep shadowing
+# these two files even after they change upstream.
+
+version: '3.8'
+
+services:
+  malla-web:
+    volumes:
+      - ./src/malla/static/favicon.svg:/app/src/malla/static/favicon.svg:ro
+      - ./src/malla/templates/base.html:/app/src/malla/templates/base.html:ro
