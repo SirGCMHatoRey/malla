@@ -804,6 +804,27 @@ class PacketRepository:
                 cursor.execute(count_query, params)
                 total_count = cursor.fetchone()[0]
 
+                # Whitelist the sort column and direction before interpolating them
+                # into the ORDER BY clause. order_by/order_dir originate from
+                # untrusted request parameters, so anything outside this allowlist
+                # must never reach the SQL text (prevents SQL injection).
+                valid_order_columns = {
+                    "timestamp",
+                    "from_node_id",
+                    "to_node_id",
+                    "portnum_name",
+                    "gateway_id",
+                    "channel_id",
+                    "mesh_packet_id",
+                    "rssi",
+                    "snr",
+                    "payload_length",
+                    "hop_count",
+                    "relay_node",
+                }
+                order_column = order_by if order_by in valid_order_columns else "timestamp"
+                order_dir_sql = "DESC" if order_dir.lower() == "desc" else "ASC"
+
                 # Main query
                 query = f"""
                     SELECT
@@ -816,7 +837,7 @@ class PacketRepository:
                         (hop_start - hop_limit) as hop_count
                     FROM packet_history
                     {where_clause}
-                    ORDER BY {order_by} {order_dir.upper()}
+                    ORDER BY {order_column} {order_dir_sql}
                     LIMIT ? OFFSET ?
                 """
 
