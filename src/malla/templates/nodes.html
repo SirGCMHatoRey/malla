@@ -319,6 +319,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             },
             {
+                key: 'first_seen_str',
+                title: 'First Seen',
+                sortable: true,
+                sortKey: 'first_seen',
+                render: (value, row) => {
+                    if (value && row.first_seen) {
+                        return el('small', {
+                            className: 'timestamp-display',
+                            dataset: { timestamp: row.first_seen }
+                        }, formatTimestamp(row.first_seen));
+                    }
+                    return el('span', { className: 'text-muted' }, 'Unknown');
+                }
+            },
+            {
                 key: 'packet_count_24h',
                 title: '24h Activity',
                 sortable: true,

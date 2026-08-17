@@ -1690,6 +1690,8 @@ def api_nodes_data():
                     "primary_channel": node.get("primary_channel"),
                     "last_packet_str": node.get("last_packet_str", "Never"),
                     "last_packet_time": node.get("last_packet_time"),
+                    "first_seen_str": node.get("first_seen_str"),
+                    "first_seen": node.get("first_seen"),
                     "packet_count_24h": node.get("packet_count_24h", 0),
                     "status": status,
                 }
