@@ -44,7 +44,7 @@ services:
       - MALLA_MQTT_PASSWORD=${MALLA_MQTT_PASSWORD:-}
       - MALLA_MQTT_TOPIC_PREFIX=${MALLA_MQTT_TOPIC_PREFIX:-msh}
       - MALLA_MQTT_TOPIC_SUFFIX=${MALLA_MQTT_TOPIC_SUFFIX:-/+/+/+/#}
-      - MALLA_DEFAULT_CHANNEL_KEY=${MALLA_DEFAULT_CHANNEL_KEY:-}
+      - MALLA_DEFAULT_CHANNEL_KEY=${MALLA_DEFAULT_CHANNEL_KEY:-1PG7OiApB1nwvP+rz05pAQ==}
     volumes:
       - malla_data:/app/data
       # Optional: mount your own config file (uncomment if you have one)
