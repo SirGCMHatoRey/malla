@@ -21,6 +21,10 @@ services:
       - MALLA_NAME=${MALLA_NAME:-Malla}
       - MALLA_SECRET_KEY=${MALLA_SECRET_KEY:-dev-secret-key-change-in-production}
       - MALLA_DEBUG=${MALLA_DEBUG:-false}
+      # Display-only: shown on the dashboard so it's clear which MQTT feed is in use.
+      # No credentials here - the web UI never connects to MQTT itself.
+      - MALLA_MQTT_BROKER_ADDRESS=${MALLA_MQTT_BROKER_ADDRESS}
+      - MALLA_MQTT_TOPIC_PREFIX=${MALLA_MQTT_TOPIC_PREFIX:-msh}
     volumes:
       - malla_data:/app/data
       # Optional: mount your own config file (uncomment if you have one)

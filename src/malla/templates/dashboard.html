@@ -31,6 +31,15 @@
     <div class="row mb-4">
         <div class="col">
             <h1 class="h2">Mesh Metrics</h1>
+            {% set mqtt_region = APP_CONFIG.mqtt_topic_prefix.split('/', 1)[1] if '/' in APP_CONFIG.mqtt_topic_prefix else None %}
+            {% set mqtt_is_public = APP_CONFIG.mqtt_broker_address in ('mqtt.meshtastic.org', 'mqtt.meshtastic.org.') %}
+            <small class="text-muted">
+                <i class="bi bi-broadcast"></i> MQTT source:
+                <span class="fw-semibold">{{ mqtt_region or APP_CONFIG.mqtt_topic_prefix }}</span>
+                {% if mqtt_is_public %}
+                <span class="badge bg-secondary-subtle text-secondary-emphasis">public</span>
+                {% endif %}
+            </small>
         </div>
     </div>
 
