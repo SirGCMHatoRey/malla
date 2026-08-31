@@ -633,6 +633,13 @@ h1, .h1 {
   border-color: var(--bs-primary) !important;
 }
 
+/* Dark basemap: OpenStreetMap tiles inverted to a dark palette.
+   CARTO's dark_all basemap now requires an API key, so we filter the
+   standard OSM raster tiles instead (see static/js/basemap.js). */
+.malla-basemap-dark {
+  filter: invert(1) hue-rotate(180deg) brightness(0.95) contrast(0.9);
+}
+
 /* Leaflet map dark mode support */
 [data-bs-theme=dark] .leaflet-popup-content-wrapper,
 [data-bs-theme=dark] .leaflet-popup-tip {
