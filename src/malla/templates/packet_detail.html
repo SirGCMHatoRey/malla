@@ -1183,18 +1183,8 @@ async function loadTracerouteMap(routeNodes) {
             routeLocations[0].longitude
         ], 10);
 
-        // Add tile layer
-        // Add theme-appropriate tile layer
-        const isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
-        const tileUrl = isDark
-            ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-            : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-
-        L.tileLayer(tileUrl, {
-            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>',
-            subdomains: 'abcd',
-            maxZoom: 20
-        }).addTo(map);
+        // Add theme-appropriate keyless basemap tiles
+        window.MallaBasemap.addBaseLayer(map);
 
         // Add markers and route line
         const routeCoords = [];
@@ -1376,18 +1366,8 @@ async function loadReceptionMap(primaryGateway, otherReceptions, gatewayLocation
             gatewayMapData[0].longitude
         ], 10);
 
-        // Add tile layer
-        // Add theme-appropriate tile layer
-        const isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
-        const tileUrl = isDark
-            ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-            : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-
-        L.tileLayer(tileUrl, {
-            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>',
-            subdomains: 'abcd',
-            maxZoom: 20
-        }).addTo(map);
+        // Add theme-appropriate keyless basemap tiles
+        window.MallaBasemap.addBaseLayer(map);
 
         // Add markers for each gateway
         gatewayMapData.forEach((gateway, index) => {
