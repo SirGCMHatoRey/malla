@@ -891,8 +891,18 @@ function loadCurrentLocationMap() {
         currentLocation.longitude
     ], 15);
 
-    // Add theme-appropriate keyless basemap tiles
-    window.MallaBasemap.addBaseLayer(currentMap);
+    // Add OpenStreetMap tiles
+    // Add theme-appropriate tile layer
+    const isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+    const tileUrl = isDark
+        ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+        : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+
+    L.tileLayer(tileUrl, {
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 20
+    }).addTo(currentMap);
 
     // Add marker for current location
     const marker = L.marker([currentLocation.latitude, currentLocation.longitude]).addTo(currentMap);
@@ -934,8 +944,18 @@ async function loadLocationHistoryMap() {
             mostRecentLocation.longitude
         ], 13);
 
-        // Add theme-appropriate keyless basemap tiles
-        window.MallaBasemap.addBaseLayer(map);
+        // Add OpenStreetMap tiles
+        // Add theme-appropriate tile layer
+        const isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+        const tileUrl = isDark
+            ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+            : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+
+        L.tileLayer(tileUrl, {
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 20
+        }).addTo(map);
 
         // Calculate age-based colors and add markers
         const now = Date.now() / 1000; // Current time in seconds

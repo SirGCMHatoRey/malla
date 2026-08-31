@@ -271,8 +271,9 @@
                     <li><strong>DEM Net Elevation API</strong> - <a href="https://elevationapi.com" target="_blank" rel="noopener">elevationapi.com</a></li>
                     <li id="demDataSource"></li>
                     <li><strong>Map Tiles</strong> - © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors,
-                        style © <a href="https://opentopomap.org" target="_blank" rel="noopener">OpenTopoMap</a>
-                        (<a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener">CC-BY-SA</a>)</li>
+                        © <a href="https://www.stadiamaps.com/" target="_blank" rel="noopener">Stadia Maps</a>,
+                        © <a href="https://www.stamen.com/" target="_blank" rel="noopener">Stamen Design</a>,
+                        © <a href="https://openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a></li>
                     <li><strong>Terrain Data</strong> - SRTM (Shuttle Radar Topography Mission)</li>
                 </ul>
             </div>
@@ -551,12 +552,12 @@ function checkAnalyzeButton() {
 function initializeMap() {
     map = L.map('line-of-sight-map').setView([40.4168, -3.7038], 6); // Default to Spain
 
-    // OpenTopoMap - keyless, terrain-aware tiles with contours and elevation
-    L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+    // Stamen Terrain (via Stadia Maps) - Shows terrain, contours, and elevation
+    L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_terrain/{z}/{x}/{y}{r}.{ext}', {
         minZoom: 0,
-        maxZoom: 17,
-        subdomains: 'abc',
-        attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+        maxZoom: 18,
+        attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://www.stamen.com/" target="_blank">Stamen Design</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        ext: 'png'
     }).addTo(map);
 }
 
