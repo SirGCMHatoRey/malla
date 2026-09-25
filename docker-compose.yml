@@ -19,6 +19,7 @@ services:
       - MALLA_PORT=5008
       - MALLA_DATABASE_FILE=/app/data/meshtastic_history.db
       - MALLA_NAME=${MALLA_NAME:-Malla}
+      - MALLA_HOME_MARKDOWN=${MALLA_HOME_MARKDOWN:-}
       - MALLA_SECRET_KEY=${MALLA_SECRET_KEY:-dev-secret-key-change-in-production}
       - MALLA_DEBUG=${MALLA_DEBUG:-false}
       # Display-only: shown on the dashboard so it's clear which MQTT feed is in use.
