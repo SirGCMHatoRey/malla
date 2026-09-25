@@ -8,6 +8,7 @@ Check out some instances with running data from community MQTT servers:
 - malla.ctmesh.org (Connecticut): https://malla.ctmesh.org
 - meshmap.pro (Taiwan): https://meshmap.pro
 - malla.motaba.net (Bulgaria): https://malla.motaba.net
+- malla.prmsh.com (Puerto Rico): https://malla.prmsh.com
 
 ## Features
 
