@@ -887,6 +887,10 @@ function createNodeActivityChart(nodeData) {
     const ctx = document.getElementById('nodeActivityChart');
     if (!ctx) return;
 
+    if (chartInstances.nodeActivityChart) {
+        chartInstances.nodeActivityChart.destroy();
+    }
+
     const activityDist = nodeData.activity_distribution;
     const colors = getChartColors();
 
@@ -925,6 +929,10 @@ function createGatewayActivityChart(gatewayData) {
     hideLoadingSpinner('gatewayActivityChart');
     const ctx = document.getElementById('gatewayActivityChart');
     if (!ctx) return;
+
+    if (chartInstances.gatewayActivityChart) {
+        chartInstances.gatewayActivityChart.destroy();
+    }
 
     // Take top 10 gateways by packet count
     const topGateways = gatewayData.slice(0, 10);
@@ -1227,6 +1235,10 @@ function createPacketTypesChart(packetTypes) {
     hideLoadingSpinner('packetTypesChart');
     const ctx = document.getElementById('packetTypesChart');
     if (!ctx) return;
+
+    if (chartInstances.packetTypesChart) {
+        chartInstances.packetTypesChart.destroy();
+    }
 
     const labels = packetTypes.map(pt => pt.portnum_name || 'Unknown');
     const data = packetTypes.map(pt => pt.count);
