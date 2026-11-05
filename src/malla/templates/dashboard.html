@@ -9,6 +9,9 @@
 .timeline-panel { height: 130px; position: relative; }
 @media (max-width: 575.98px) {
     .timeline-panel { height: 110px; }
+    /* Keep the 24h/7d/30d/All buttons at a touch-friendly 44px tall even
+       though btn-group-sm keeps them visually compact. */
+    #timelineRangeButtons .btn { min-height: 44px; padding-top: 0.5rem; padding-bottom: 0.5rem; }
 }
 </style>
 {% endblock %}
@@ -43,9 +46,18 @@
         </div>
     </div>
 
+    <div class="row mb-4">
+        <div class="col">
+            <div id="analyticsErrorBanner" class="alert alert-warning d-flex justify-content-between align-items-center" style="display: none;" role="alert">
+                <span><i class="bi bi-exclamation-triangle"></i> Failed to load chart data.</span>
+                <button type="button" class="btn btn-sm btn-outline-warning" onclick="loadAnalyticsData()">Retry</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Network Overview Cards - Redesigned for Heterogeneous Networks -->
     <div class="row mb-4">
-        <div class="col-md-2">
+        <div class="col-6 col-sm-4 col-md-2">
             <div class="card h-100">
                 <div class="card-body card-metric">
                     <div class="metric-value">{{ stats.total_nodes }}</div>
@@ -54,7 +66,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-6 col-sm-4 col-md-2">
             <div class="card h-100">
                 <div class="card-body card-metric">
                     <div class="metric-value text-success">{{ stats.active_nodes_24h }}</div>
@@ -63,25 +75,25 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-6 col-sm-4 col-md-2">
             <div class="card h-100">
                 <div class="card-body card-metric">
                     <div class="metric-value text-warning">{{ gateway_count }}</div>
-                    <div class="metric-label">Gateway Diversity</div>
+                    <div class="metric-label">Active Gateways</div>
                     <small class="text-muted">Data source reliability</small>
                 </div>
             </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-6 col-sm-4 col-md-2">
             <div class="card h-100">
                 <div class="card-body card-metric">
                     <div class="metric-value text-info">{{ stats.packet_types|length }}</div>
-                    <div class="metric-label">Protocol Diversity</div>
+                    <div class="metric-label">Protocol Types</div>
                     <small class="text-muted">Message types in use</small>
                 </div>
             </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-6 col-sm-4 col-md-2">
             <div class="card h-100">
                 <div class="card-body card-metric">
                     <div class="metric-value">{{ "{:,}".format(stats.total_packets) }}</div>
@@ -90,7 +102,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-6 col-sm-4 col-md-2">
             <div class="card h-100">
                 <div class="card-body card-metric">
                     {% set success_class = 'text-success' if stats.success_rate >= 95 else 'text-warning' if stats.success_rate >= 85 else 'text-danger' %}
@@ -193,27 +205,22 @@
                         <small class="text-muted">Packet processing reliability</small>
                     </div>
 
-                    <div class="mb-3">
-                        <h6>Gateway Diversity</h6>
-                        <div class="progress mb-2">
-                            {% set gateway_diversity = (gateway_count / 10 * 100)|int if gateway_count <= 10 else 100 %}
-                            <div class="progress-bar bg-primary" style="width: {{ gateway_diversity }}%;">
-                                {{ gateway_count }} sources
-                            </div>
-                        </div>
-                        <small class="text-muted">Multiple data sources improve reliability</small>
-                    </div>
-
                     <hr>
 
                     <div class="row text-center">
-                        <div class="col-6">
+                        <div class="col-4">
                             <div class="border-end">
                                 <div class="fw-bold text-primary">{{ stats.recent_packets }}</div>
                                 <small class="text-muted">Recent Activity</small>
                             </div>
                         </div>
-                        <div class="col-6">
+                        <div class="col-4">
+                            <div class="border-end">
+                                <div class="fw-bold text-warning">{{ gateway_count }}</div>
+                                <small class="text-muted">Active Gateways</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
                             <div class="fw-bold text-success">{{ stats.packet_types|length }}</div>
                             <small class="text-muted">Protocol Types</small>
                         </div>
@@ -380,99 +387,24 @@
         </div>
     </div>
 
-    <!-- Network Information Cards -->
+    <!-- Explore further: avg RSSI/SNR already live in the Signal Quality
+         distribution card above; this row points to the dedicated tools
+         instead of re-stating numbers already on this page. -->
     <div class="row mb-4">
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    <h6 class="card-title mb-0"><i class="bi bi-info-circle"></i> Network Information</h6>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-6">
-                            <strong>Total Nodes:</strong><br>
-                            <span class="text-primary">{{ stats.total_nodes }}</span>
-                        </div>
-                        <div class="col-6">
-                            <strong>Active (24h):</strong><br>
-                            <span class="text-success">{{ stats.active_nodes_24h }}</span>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-6">
-                            <strong>Gateways:</strong><br>
-                            <span class="text-warning">{{ gateway_count }}</span>
-                        </div>
-                        <div class="col-6">
-                            <strong>Protocols:</strong><br>
-                            <span class="text-info">{{ stats.packet_types|length }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    <h6 class="card-title mb-0"><i class="bi bi-activity"></i> Activity Summary</h6>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-6">
-                            <strong>Total Messages:</strong><br>
-                            <span class="text-primary">{{ "{:,}".format(stats.total_packets) }}</span>
-                        </div>
-                        <div class="col-6">
-                            <strong>Recent (1h):</strong><br>
-                            <span class="text-success">{{ stats.recent_packets }}</span>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-12">
-                            <strong>Success Rate:</strong><br>
-                            {% set success_class = 'text-success' if stats.success_rate >= 95 else 'text-warning' if stats.success_rate >= 85 else 'text-danger' %}
-                            <span class="{{ success_class }}">{{ stats.success_rate }}%</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    <h6 class="card-title mb-0"><i class="bi bi-reception-4"></i> Signal Quality</h6>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-6">
-                            <strong>Avg RSSI:</strong><br>
-                            <span class="text-primary">{{ stats.avg_rssi|format_rssi }}dBm</span>
-                        </div>
-                        <div class="col-6">
-                            <strong>Avg SNR:</strong><br>
-                            <span class="text-success">{{ stats.avg_snr|format_snr }}dB</span>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-12">
-                            <strong>Network Health:</strong><br>
-                            {% set nodes_seen_7d_safe = stats.nodes_seen_7d if stats.nodes_seen_7d and stats.nodes_seen_7d > 0 else 1 %}
-                            {% set activity_percentage = (stats.active_nodes_24h / nodes_seen_7d_safe * 100)|int %}
-                            {% if activity_percentage >= 70 %}
-                                <span class="text-success">Excellent</span>
-                            {% elif activity_percentage >= 40 %}
-                                <span class="text-warning">Good</span>
-                            {% else %}
-                                <span class="text-danger">Needs Attention</span>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
+        <div class="col-12">
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{{ url_for('node.nodes') }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-router"></i> Browse all nodes
+                </a>
+                <a href="{{ url_for('gateway.gateway_compare') }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-router-fill"></i> Compare gateways
+                </a>
+                <a href="{{ url_for('main.map_view') }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-map"></i> View map
+                </a>
+                <a href="{{ url_for('traceroute.traceroute_graph') }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-diagram-2"></i> Network graph
+                </a>
             </div>
         </div>
     </div>
@@ -607,6 +539,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 async function loadAnalyticsData() {
+    hideErrorBanner();
     try {
         const response = await fetch('/api/analytics');
         if (!response.ok) {
@@ -624,10 +557,16 @@ async function loadAnalyticsData() {
 
     } catch (error) {
         console.error('Error loading analytics data:', error);
-        // Hide loading spinners and show error message
+        // Hide loading spinners and show a visible, recoverable error instead
+        // of leaving blank cards with no explanation.
         hideAllLoadingSpinners();
-        showErrorMessage('Failed to load chart data. Please refresh the page.');
+        showErrorMessage('Failed to load chart data.');
     }
+}
+
+function hideErrorBanner() {
+    const banner = document.getElementById('analyticsErrorBanner');
+    if (banner) banner.style.display = 'none';
 }
 
 function hideLoadingSpinner(chartId) {
@@ -643,8 +582,14 @@ function hideAllLoadingSpinners() {
 }
 
 function showErrorMessage(message) {
-    // You could implement a toast notification here
-    console.error(message);
+    const banner = document.getElementById('analyticsErrorBanner');
+    if (!banner) {
+        console.error(message);
+        return;
+    }
+    const span = banner.querySelector('span');
+    if (span) span.innerHTML = `<i class="bi bi-exclamation-triangle"></i> ${message}`;
+    banner.style.display = '';
 }
 
 // ---------------------------------------------------------------------------
