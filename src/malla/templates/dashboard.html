@@ -13,6 +13,12 @@
        though btn-group-sm keeps them visually compact. */
     #timelineRangeButtons .btn { min-height: 44px; padding-top: 0.5rem; padding-bottom: 0.5rem; }
 }
+
+/* Collapsible card sections: chevron points down when expanded, right when
+   collapsed (the card header, with its title, stays visible either way so
+   a trimmed-down card is still recognizable). */
+.card-collapse-toggle .bi-chevron-down { display: inline-block; transition: transform 0.2s ease; }
+.card-collapse-toggle[aria-expanded="false"] .bi-chevron-down { transform: rotate(-90deg); }
 </style>
 {% endblock %}
 
@@ -121,14 +127,19 @@
             <div class="card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <h5 class="card-title mb-0"><i class="bi bi-graph-up-arrow"></i> Network Activity Trends</h5>
-                    <div class="btn-group btn-group-sm" role="group" aria-label="Time range" id="timelineRangeButtons">
-                        <button type="button" class="btn btn-outline-secondary" data-range="24h">24h</button>
-                        <button type="button" class="btn btn-outline-secondary" data-range="7d">7d</button>
-                        <button type="button" class="btn btn-outline-secondary" data-range="30d">30d</button>
-                        <button type="button" class="btn btn-outline-secondary" data-range="all">All</button>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Time range" id="timelineRangeButtons">
+                            <button type="button" class="btn btn-outline-secondary" data-range="24h">24h</button>
+                            <button type="button" class="btn btn-outline-secondary" data-range="7d">7d</button>
+                            <button type="button" class="btn btn-outline-secondary" data-range="30d">30d</button>
+                            <button type="button" class="btn btn-outline-secondary" data-range="all">All</button>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-link text-muted p-0 card-collapse-toggle" data-collapse-key="networkActivity" aria-expanded="true" aria-controls="networkActivityBody" aria-label="Toggle Network Activity Trends section">
+                            <i class="bi bi-chevron-down"></i>
+                        </button>
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body" id="networkActivityBody">
                     <div id="activityTimelinePanelsLoading" class="text-center py-4">
                         <div class="spinner-border text-primary" role="status">
                             <span class="visually-hidden">Loading...</span>
@@ -176,10 +187,13 @@
         <!-- Network Health Status -->
         <div class="col-md-4 mb-4">
             <div class="card h-100">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0"><i class="bi bi-activity"></i> Network Health</h5>
+                    <button type="button" class="btn btn-sm btn-link text-muted p-0 card-collapse-toggle" data-collapse-key="networkHealth" aria-expanded="true" aria-controls="networkHealthBody" aria-label="Toggle Network Health section">
+                        <i class="bi bi-chevron-down"></i>
+                    </button>
                 </div>
-                <div class="card-body">
+                <div class="card-body" id="networkHealthBody">
                     <div class="mb-3">
                         <h6>Weekly Activity Ratio</h6>
                         <div class="progress mb-2">
@@ -235,10 +249,13 @@
         <!-- Active Nodes Distribution -->
         <div class="col-md-4 mb-4">
             <div class="card h-100">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0"><i class="bi bi-people"></i> Node Activity Distribution</h5>
+                    <button type="button" class="btn btn-sm btn-link text-muted p-0 card-collapse-toggle" data-collapse-key="nodeActivityDist" aria-expanded="true" aria-controls="nodeActivityDistBody" aria-label="Toggle Node Activity Distribution section">
+                        <i class="bi bi-chevron-down"></i>
+                    </button>
                 </div>
-                <div class="card-body">
+                <div class="card-body" id="nodeActivityDistBody">
                     <div id="nodeActivityChartLoading" class="text-center py-4">
                         <div class="spinner-border text-primary" role="status">
                             <span class="visually-hidden">Loading...</span>
@@ -252,10 +269,13 @@
         <!-- Active Gateways Distribution -->
         <div class="col-md-4 mb-4">
             <div class="card h-100">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0"><i class="bi bi-router-fill"></i> Gateway Activity Distribution</h5>
+                    <button type="button" class="btn btn-sm btn-link text-muted p-0 card-collapse-toggle" data-collapse-key="gatewayActivityDist" aria-expanded="true" aria-controls="gatewayActivityDistBody" aria-label="Toggle Gateway Activity Distribution section">
+                        <i class="bi bi-chevron-down"></i>
+                    </button>
                 </div>
-                <div class="card-body">
+                <div class="card-body" id="gatewayActivityDistBody">
                     <div id="gatewayActivityChartLoading" class="text-center py-4">
                         <div class="spinner-border text-primary" role="status">
                             <span class="visually-hidden">Loading...</span>
@@ -269,10 +289,13 @@
         <!-- Signal Quality Distribution -->
         <div class="col-md-4 mb-4">
             <div class="card h-100">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0"><i class="bi bi-reception-4"></i> Signal Quality Distribution</h5>
+                    <button type="button" class="btn btn-sm btn-link text-muted p-0 card-collapse-toggle" data-collapse-key="signalQualityDist" aria-expanded="true" aria-controls="signalQualityDistBody" aria-label="Toggle Signal Quality Distribution section">
+                        <i class="bi bi-chevron-down"></i>
+                    </button>
                 </div>
-                <div class="card-body">
+                <div class="card-body" id="signalQualityDistBody">
                     <div id="signalDistributionChartLoading" class="text-center py-4">
                         <div class="spinner-border text-primary" role="status">
                             <span class="visually-hidden">Loading...</span>
@@ -306,10 +329,13 @@
         <!-- Hop Count Distribution -->
         <div class="col-md-6 mb-4">
             <div class="card h-100">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0"><i class="bi bi-router"></i> Message Routing Patterns</h5>
+                    <button type="button" class="btn btn-sm btn-link text-muted p-0 card-collapse-toggle" data-collapse-key="hopDistribution" aria-expanded="true" aria-controls="hopDistributionBody" aria-label="Toggle Message Routing Patterns section">
+                        <i class="bi bi-chevron-down"></i>
+                    </button>
                 </div>
-                <div class="card-body">
+                <div class="card-body" id="hopDistributionBody">
                     <div id="hopDistributionChartLoading" class="text-center py-4">
                         <div class="spinner-border text-primary" role="status">
                             <span class="visually-hidden">Loading...</span>
@@ -333,10 +359,13 @@
         <!-- Protocol Usage -->
         <div class="col-md-6 mb-4">
             <div class="card h-100">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0"><i class="bi bi-pie-chart"></i> Protocol Usage (24h)</h5>
+                    <button type="button" class="btn btn-sm btn-link text-muted p-0 card-collapse-toggle" data-collapse-key="protocolUsage" aria-expanded="true" aria-controls="protocolUsageBody" aria-label="Toggle Protocol Usage section">
+                        <i class="bi bi-chevron-down"></i>
+                    </button>
                 </div>
-                <div class="card-body">
+                <div class="card-body" id="protocolUsageBody">
                     {% if stats.packet_types %}
                     <div id="packetTypesChartLoading" class="text-center py-4">
                         <div class="spinner-border text-primary" role="status">
@@ -359,10 +388,13 @@
     <div class="row mb-4">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0"><i class="bi bi-trophy"></i> Most Active Nodes</h5>
+                    <button type="button" class="btn btn-sm btn-link text-muted p-0 card-collapse-toggle" data-collapse-key="topActiveNodes" aria-expanded="true" aria-controls="topActiveNodesBody" aria-label="Toggle Most Active Nodes section">
+                        <i class="bi bi-chevron-down"></i>
+                    </button>
                 </div>
-                <div class="card-body">
+                <div class="card-body" id="topActiveNodesBody">
                     <div id="topNodesLoading" class="text-center py-4">
                         <div class="spinner-border text-primary" role="status">
                             <span class="visually-hidden">Loading...</span>
@@ -522,6 +554,9 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Restore collapsed/expanded state for each card section
+    initCollapsibleCards();
+
     // Listen for theme changes and update charts
     window.addEventListener('themeChanged', function(event) {
         updateChartsForTheme();
@@ -567,6 +602,43 @@ async function loadAnalyticsData() {
 function hideErrorBanner() {
     const banner = document.getElementById('analyticsErrorBanner');
     if (banner) banner.style.display = 'none';
+}
+
+// ---------------------------------------------------------------------------
+// Collapsible card sections: each one remembers its collapsed state per
+// browser (same localStorage pattern as the timeline range), so a returning
+// operator sees whatever they trimmed the dashboard down to last time.
+// ---------------------------------------------------------------------------
+function initCollapsibleCards() {
+    document.querySelectorAll('.card-collapse-toggle').forEach(btn => {
+        const storageKey = 'mallaCardCollapsed:' + btn.dataset.collapseKey;
+        const body = document.getElementById(btn.getAttribute('aria-controls'));
+        if (!body) return;
+
+        let collapsed = false;
+        try { collapsed = localStorage.getItem(storageKey) === '1'; } catch (e) { /* private mode */ }
+        setCardCollapsed(btn, body, collapsed);
+
+        btn.addEventListener('click', () => {
+            const collapsing = btn.getAttribute('aria-expanded') === 'true';
+            setCardCollapsed(btn, body, collapsing);
+            try { localStorage.setItem(storageKey, collapsing ? '1' : '0'); } catch (e) { /* private mode */ }
+        });
+    });
+}
+
+function setCardCollapsed(btn, body, collapsed) {
+    body.style.display = collapsed ? 'none' : '';
+    btn.setAttribute('aria-expanded', String(!collapsed));
+    if (!collapsed) {
+        // A chart created (or theme-recreated) while its card was collapsed
+        // measured a zero-height container; resize it now that the card is
+        // visible instead of waiting for the next window resize.
+        body.querySelectorAll('canvas').forEach(canvas => {
+            const chart = Chart.getChart(canvas);
+            if (chart) chart.resize();
+        });
+    }
 }
 
 function hideLoadingSpinner(chartId) {
