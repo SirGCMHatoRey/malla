@@ -165,14 +165,23 @@ function escapeHtml(str) {
  */
 function renderTimestampColumn(row, timestampField = 'timestamp', idField = 'id', linkPath = '/packet/{id}') {
     const timestamp = row[timestampField];
-    const formattedTime = formatTimestamp(timestamp);
     const id = row[idField];
 
     const href = safePath(linkPath.replace('{id}', encodeURIComponent(String(id))));
-    const small = el('small', {
-        className: 'timestamp-display',
-        dataset: { timestamp: timestamp }
-    }, formattedTime);
+    // Date is shown smaller/muted and time at normal weight, since every
+    // row repeats its own date and the eye should land on the time first
+    // when scanning a dense, mostly-same-day table.
+    const small = el('small', { className: 'd-inline-flex align-items-baseline gap-1' },
+        el('span', {
+            className: 'timestamp-display text-muted',
+            style: { fontSize: '0.85em' },
+            dataset: { timestamp: timestamp, timestampFormat: 'date' }
+        }, formatTimestamp(timestamp, 'date')),
+        el('span', {
+            className: 'timestamp-display',
+            dataset: { timestamp: timestamp, timestampFormat: 'time' }
+        }, formatTimestamp(timestamp, 'time'))
+    );
 
     return el('a', {
         href,

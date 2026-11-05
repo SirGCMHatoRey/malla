@@ -247,6 +247,20 @@ document.addEventListener('DOMContentLoaded', function() {
         controller.initialLoad(hasParams);
     }
 
+    // Shared renderer for a single-gateway cell (used for both grouped and
+    // ungrouped packets once there's exactly one gateway to show).
+    function renderGatewayCell(value, gatewayName, gatewayNodeId) {
+        if (value && value.startsWith('!') && gatewayNodeId) {
+            const shortName = value.substring(value.length - 4).toUpperCase();
+            return nodeLink(gatewayNodeId, shortName);
+        } else if (gatewayName && gatewayNodeId) {
+            const parenMatch = gatewayName.match(/\(([^)]+)\)$/);
+            const shortName = parenMatch ? parenMatch[1] : gatewayName.substring(0, 4).toUpperCase();
+            return nodeLink(gatewayNodeId, shortName);
+        }
+        return textNode(value || 'N/A');
+    }
+
     // Generic column configuration system
     const COLUMN_CONFIGS = {
         // Base columns that are always visible
@@ -346,29 +360,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 title: 'Gateway',
                 sortable: true,
                 render: (value, row) => {
-                    if (row.is_grouped) {
-                        const count = row.gateway_count;
-                        if (count > 1) {
-                            return el('span', {
-                                className: 'badge bg-info',
-                                title: `Multiple gateways: ${row.gateway_list}`
-                            }, `${count} gateways`);
-                        }
-                        return badge(value, 'bg-info');
-                    } else {
-                        const gatewayName = row.gateway_name;
-                        const gatewayNodeId = row.gateway_node_id;
-
-                        if (value && value.startsWith('!') && gatewayNodeId) {
-                            const shortName = value.substring(value.length - 4).toUpperCase();
-                            return nodeLink(gatewayNodeId, shortName);
-                        } else if (gatewayName && gatewayNodeId) {
-                            const parenMatch = gatewayName.match(/\(([^)]+)\)$/);
-                            const shortName = parenMatch ? parenMatch[1] : gatewayName.substring(0, 4).toUpperCase();
-                            return nodeLink(gatewayNodeId, shortName);
-                        }
-                        return textNode(value || 'N/A');
+                    if (row.is_grouped && row.gateway_count > 1) {
+                        return el('span', {
+                            className: 'badge bg-info',
+                            title: `Multiple gateways: ${row.gateway_list}`
+                        }, `${row.gateway_count} gateways`);
                     }
+                    // Single gateway (grouped or not): show its actual
+                    // name/link rather than a generic "1 gateway" badge.
+                    return renderGatewayCell(value, row.gateway_name, row.gateway_node_id);
                 }
             },
             {

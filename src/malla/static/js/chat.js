@@ -89,6 +89,12 @@
         return m.minHops === m.maxHops ? String(m.minHops) : m.minHops + '-' + m.maxHops;
     }
 
+    function rxBadgeTitle(m) {
+        var rxCount = m.rxList.length;
+        return 'Received by ' + rxCount + ' gateway' + (rxCount === 1 ? '' : 's') +
+            ' · ' + hopsLabel(m) + ' hop(s) — click for reception details';
+    }
+
     function atBottom() { return messagesEl.scrollHeight - messagesEl.scrollTop - messagesEl.clientHeight < 60; }
 
     function updateScrollButton() {
@@ -439,7 +445,8 @@
         var meta = el('span', { className: 'chat-meta' },
             el('span', {
                 className: 'chat-rx-badge badge bg-secondary',
-                dataset: { meshId: msg.meshId || msg.firstId }
+                dataset: { meshId: msg.meshId || msg.firstId },
+                title: rxBadgeTitle(msg)
             }, 'rx' + msg.rxList.length + ' h' + hopsLabel(msg))
         );
         if (msg.channel) {
@@ -519,6 +526,7 @@
         var badge = entry.el.querySelector('.chat-rx-badge');
         if (!badge) return;
         badge.textContent = 'rx' + entry.rxList.length + ' h' + hopsLabel(entry);
+        badge.title = rxBadgeTitle(entry);
         refreshPop(entry.meshId);
     }
 

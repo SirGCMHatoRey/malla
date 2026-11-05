@@ -133,10 +133,15 @@
             {"type": "line", "class": "indirect", "text": "Multi-hop paths"}
         ] %}
         {% call legend_section(legend_items) %}
-            <div class="legend-item mt-2">
-                <small class="text-muted">Node size = traffic volume<br>
+            <div class="legend-item mt-2 flex-column align-items-stretch">
+                <small class="text-muted mb-1">Node size = traffic volume<br>
                 Link thickness = signal strength<br>
-                Colors = SNR quality</small>
+                Node/link color = avg SNR (poor → excellent):</small>
+                <div style="height: 8px; border-radius: 4px; background: linear-gradient(to right, #a50026, #f46d43, #fee08b, #a6d96a, #1a9850);"></div>
+                <div class="d-flex justify-content-between">
+                    <small class="text-muted">-30 dB</small>
+                    <small class="text-muted">+10 dB</small>
+                </div>
             </div>
         {% endcall %}
     {% endcall %}
@@ -410,16 +415,19 @@ function loadGraph() {
                         renderGraph(data);
                         updateStats(data.stats);
                         hideLoading();
+                        setTimeout(centerGraph, 600);
                     }, 100);
                 } else {
                     renderGraph(data);
                     updateStats(data.stats);
                     hideLoading();
+                    setTimeout(centerGraph, 600);
                 }
             } else {
                 renderGraph(data);
                 updateStats(data.stats);
                 hideLoading();
+                setTimeout(centerGraph, 600);
             }
         })
         .catch(error => {

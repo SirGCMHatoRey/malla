@@ -527,9 +527,13 @@ class TestGatewaySortingDataFormat:
             assert "data" in data
             assert len(data["data"]) == 2
 
-            # Check first row (1 gateway)
+            # Check first row (1 gateway): the UI shows the actual gateway
+            # instead of a generic "1 gateway" badge once there's only one.
+            # No name is resolvable here since get_bulk_node_names is mocked
+            # to return {}, so it falls back to the raw gateway ID.
             row1 = data["data"][0]
-            assert row1["gateway"] == "1 gateway"  # Gateway column should show count
+            assert row1["gateway"] == "!433d0c24"
+            assert row1["gateway_sort_value"] == 1
             assert row1["is_grouped"] is True  # Is grouped flag
             assert row1["gateway_list"] == "!433d0c24"  # Gateway list
 

@@ -1581,6 +1581,18 @@ def api_packets_data():
                     gateway_node_ids.add(gateway_node_id)
                 except ValueError:
                     pass
+            # Grouped packets with a single gateway: resolve that gateway's
+            # node name too, so the UI can show it instead of a generic
+            # "1 gateway" badge.
+            if (
+                group_packets
+                and packet.get("gateway_count") == 1
+                and packet.get("gateway_list", "").startswith("!")
+            ):
+                try:
+                    gateway_node_ids.add(int(packet["gateway_list"][1:], 16))
+                except ValueError:
+                    pass
 
         node_names = get_bulk_node_names(list(node_ids | gateway_node_ids))
 
@@ -1618,11 +1630,29 @@ def api_packets_data():
             gateway_sort_value = 0
 
             if group_packets:
-                # For grouped packets, show gateway count
+                # For grouped packets, show gateway count — unless there's
+                # only one gateway, in which case show its actual name
+                # instead of a generic "1 gateway" badge (gateway_count is
+                # always >= 1 here since gateway_list is never empty).
                 gateway_list = packet.get("gateway_list", "")
                 gateway_count = packet.get("gateway_count", 0)
 
-                if gateway_list and gateway_count > 0:
+                if gateway_count == 1 and gateway_list:
+                    if gateway_list.startswith("!"):
+                        try:
+                            single_gateway_node_id = int(gateway_list[1:], 16)
+                            gateway_name = node_names.get(single_gateway_node_id)
+                            gateway_display = (
+                                f"{gateway_name} ({gateway_list})"
+                                if gateway_name
+                                else gateway_list
+                            )
+                        except ValueError:
+                            gateway_display = gateway_list
+                    else:
+                        gateway_display = gateway_list
+                    gateway_sort_value = 1
+                elif gateway_list and gateway_count > 1:
                     gateway_display = (
                         f"{gateway_count} gateway{'s' if gateway_count != 1 else ''}"
                     )
@@ -1695,6 +1725,14 @@ def api_packets_data():
                 response_data["gateway_list"] = packet.get("gateway_list", "")
                 response_data["gateway_count"] = packet.get("gateway_count", 0)
                 response_data["relay_node_grouped"] = packet.get("relay_node_grouped")
+                if gateway_sort_value == 1 and gateway_list.startswith("!"):
+                    try:
+                        response_data["gateway_node_id"] = int(gateway_list[1:], 16)
+                        response_data["gateway_name"] = node_names.get(
+                            response_data["gateway_node_id"]
+                        )
+                    except ValueError:
+                        pass
             else:
                 # For individual packets, add gateway node info for frontend links
                 gateway_id = packet.get("gateway_id")
@@ -1919,6 +1957,18 @@ def api_traceroute_data():
                     gateway_node_ids.add(gateway_node_id)
                 except ValueError:
                     pass
+            # Grouped traceroutes with a single gateway: resolve that
+            # gateway's node name too, so the UI can show it instead of a
+            # bare gateway count.
+            if (
+                group_packets
+                and tr.get("gateway_count") == 1
+                and tr.get("gateway_list", "").startswith("!")
+            ):
+                try:
+                    gateway_node_ids.add(int(tr["gateway_list"][1:], 16))
+                except ValueError:
+                    pass
             if tr.get("raw_payload"):
                 try:
                     route_data = parse_traceroute_payload(tr["raw_payload"])
@@ -2017,10 +2067,35 @@ def api_traceroute_data():
             gateway_sort_value = 0
 
             if group_packets:
-                # For grouped packets, show gateway count as number
+                # For grouped packets, show gateway count — unless there's
+                # only one gateway, in which case show its actual name
+                # instead of a bare count.
+                gateway_list = tr.get("gateway_list", "")
                 gateway_count = tr.get("gateway_count", 0)
-                gateway_display = gateway_count
-                gateway_sort_value = gateway_count
+
+                if gateway_count == 1 and gateway_list:
+                    if gateway_list.startswith("!"):
+                        try:
+                            single_gateway_node_id = int(gateway_list[1:], 16)
+                            gateway_name = node_names.get(single_gateway_node_id)
+                            gateway_display = (
+                                f"{gateway_name} ({gateway_list})"
+                                if gateway_name
+                                else gateway_list
+                            )
+                        except ValueError:
+                            gateway_display = gateway_list
+                    else:
+                        gateway_display = gateway_list
+                    gateway_sort_value = 1
+                elif gateway_list and gateway_count > 1:
+                    gateway_display = (
+                        f"{gateway_count} gateway{'s' if gateway_count != 1 else ''}"
+                    )
+                    gateway_sort_value = gateway_count
+                else:
+                    gateway_display = "N/A"
+                    gateway_sort_value = 0
             else:
                 # For individual packets, show gateway name with link if it's a node
                 gateway_id = tr.get("gateway_id")
@@ -2081,6 +2156,14 @@ def api_traceroute_data():
             if group_packets:
                 response_data["gateway_list"] = tr.get("gateway_list", "")
                 response_data["gateway_count"] = tr.get("gateway_count", 0)
+                if gateway_sort_value == 1 and gateway_list.startswith("!"):
+                    try:
+                        response_data["gateway_node_id"] = int(gateway_list[1:], 16)
+                        response_data["gateway_name"] = node_names.get(
+                            response_data["gateway_node_id"]
+                        )
+                    except ValueError:
+                        pass
             else:
                 # For individual packets, add gateway node info for frontend links
                 gateway_id = tr.get("gateway_id")
